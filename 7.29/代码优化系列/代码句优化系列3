@@ -1,0 +1,12 @@
+//press_end 第22行
+#include<stdio.h>
+int main()
+{
+	int in = 8, l = 56, a = 4;
+	// l <<= a;
+	// in |= l;
+	in |= l <<= a;				// in l的值都被修改
+	in |= l << a;				// in 的值被改，l没有
+	printf("in=%d l=%d", in, l);
+	 return 0;
+}

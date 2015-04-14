@@ -1,0 +1,56 @@
+#include"fqpress3.h"
+int main()
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("./test/picture", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	int in = 0, out = 0, len = 0, clen = 0, left = 0, w = 0;
+	fseek(fpi, 0, 2);
+	w = ftell(fpi);
+	fseek(fpi, 0, 0);
+	fpo = fopen("./test/picture.fq31", "w");
+	system("date");
+	while ((in=fgetc(fpi))!=EOF)
+	{
+		int canc = 0;
+		//if (ftell(fpi) == 75)
+		//	break;
+		canc = canc_list[in];
+		// printf("%d canc=%d add=%d\n", in,canc,addlen3[canc]);
+		in &= meta_cans[canc];
+		in |= head3[canc];
+		left <<= addlen3[canc];
+		// printf("left2=%d ",left);
+		in |= left;
+		len = addlen3[canc] + clen;
+		if (len > 8)
+		{
+			if (addlen3[canc] == 9)
+				clen = len - 9;
+			else
+				clen = len - 8;
+			left = ((1 << clen) - 1) & in;
+			out = (in >> clen);
+			//printf("%3d ", out);
+			fputc(out, fpo);
+		}
+		else
+		{
+			clen = len;
+			left = in;
+		}
+		// printf("clen=%d left=%d \n", clen, left);
+		if (ftell(fpi) == w)
+			fputc(left, fpo);
+		// getch();
+	}
+	 fclose(fpi);
+	fclose(fpo);
+	system("date");
+	fpi = fpo = NULL;
+	return 0;
+}

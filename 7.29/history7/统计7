@@ -1,0 +1,46 @@
+#include"fqpress3.h"
+int main()
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("../test/picture", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	int in = 0;
+	fpo = fopen("../test/picture.f", "w");
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		int canc = 0;
+		// if (ftell(fpi) == 5000)
+		// break;
+		canc = canc_list[in];
+		if (canc == 7)
+		{
+			in >>= 4;
+			fprintf(fpo,"%d",in);
+		}
+		in = fgetc(fpi);
+	}
+	printf("ok");
+	fclose(fpi);
+	fclose(fpi);
+	fpi = fpo = NULL;
+	return 0;
+}
+
+void getbitlist(int n)
+{
+	int bits[8] = { 0 };
+	int bit[] = {
+		0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1
+	};
+	for (int i = 0; i < 8; i++)
+	{
+		bits[i] = (n & bit[i]) / bit[i];
+		printf("%d", bits[i]);
+	}
+	// printf(" ");
+}

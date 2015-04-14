@@ -1,0 +1,85 @@
+#include"fqpress3.h"
+int main(int argc, char *argv[])
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("../test/picture.f", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	int in = 0, out = 0, in2 = 0, clen = 0, left = 0;
+	int chose_way = 0;
+	fpo = fopen("../test/picture.2", "w");
+	system("date");
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		printf("in=%d ", in);
+		getbitlist(in);
+		int len = 8, canc = -1;
+		len += clen;
+		left <<= 8;
+		in |= left;
+		printf("%d ", in);
+		getbitlist(in >> clen);
+		printf("len=%d ", len);
+		// gethead >> getcanc
+		while ((gethead7[++canc] & (in >> (len - 6))) != matchead7[canc]);
+		printf("canc=%d\n", canc);
+		// getin
+		if (len >= addlen7[canc])
+		{
+			clen = len - addlen7[canc];
+			left = ((1 << clen) - 1) & in;
+			printf("clen=%d left=%d\n", clen, left);
+			in >>= clen;
+			if (clen >= 7)
+			{
+				while ((gethead7[++canc] & (in >> (clen - 6))) !=
+					   matchead7[canc]);
+				clen -= 7;
+			}
+			printf("in_1=%d ", in);
+			getbitlist(in);
+		}
+		else
+		{
+			clen = len;
+			left = in;
+		}
+		// getout
+		out = in & meta_cans[canc];
+		chose_way = chose_wayl7[canc] & out;
+		printf("CW=%d add=%d ", chose_way, addlen3[canc]);
+		if (canc == 0)
+			chose_way = !chose_way;
+		if (!chose_way)
+			out |= (0xff >> canc << canc);
+		printf("\n\t♥♥♥♥♥♥out=%d ", out);
+		getbitlist(out);
+		printf("\n");
+		getch();
+		fputc(out, fpo);
+		in = fgetc(fpi);
+	}
+	fclose(fpi);
+	fclose(fpo);
+	system("date");
+	fpi = fpo = NULL;
+	return 0;
+}
+
+void getbitlist(int n)
+{
+	int bits[8] = { 0 };
+	int bit[] = {
+		0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1
+	};
+	for (int i = 0; i < 8; i++)
+	{
+		bits[i] = (n & bit[i]) / bit[i];
+		printf("%d", bits[i]);
+	}
+	printf("  ");
+}

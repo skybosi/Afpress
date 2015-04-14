@@ -1,0 +1,15 @@
+#include"fqpresse.h"
+int main()
+{
+	int a = 16, b = 7, c = 0, d = 0, cans = 0;
+	int canca = 0, cancb = 0, head1 = 0;
+	canca = canc_list[a];//不能让它等于7
+	cancb = canc_list[b];
+	head1 = head[canca][cancb];
+	printf("%d,%d %d ", canca, cancb, head1);
+	c = a & meta_cans[canca];
+	d = b & meta_cans[cancb];
+	cans = (c << cancb) | d;
+	printf("%d ", cans | head1);
+	return 0;
+}

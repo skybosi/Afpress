@@ -1,0 +1,79 @@
+#include"new.h"
+int main(int argc, char *argv[])
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("../test/picture", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	char in1 = 0, in2 = 0, in3 = 0, ch = 0;
+	int clen = 0, left = 0;
+	int canc1 = 0, canc2 = 0, canc3 = 0;
+	int cans1 = 0, cans2 = 0, cans3 = 0, out = 0, len = 0;
+	fpo = fopen("../test/picture.73", "w");
+	system("date");
+	in1 = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		canc1 = canc_list[in1];
+		cans1 = in1 & meta_cans[canc1];
+		if (canc1 == 7)
+		{
+			in2 = fgetc(fpi);
+			canc2 = canc_list[in2];
+			cans2 = in2 & meta_cans[canc2];
+			if (canc2 == 7)
+			{
+				len = 24;
+				in3 = fgetc(fpi);
+				canc3 = canc_list[in3];
+				cans3 = in3 & meta_cans[canc3];
+				if (canc3 == 7)
+					len = 25;
+				cans1 <<= (canc2 + canc3);
+				cans2 <<= canc3;
+				cans1 |= cans2;
+				cans1 |= cans3;
+				out = head7xm[canc3] | cans1;
+			}
+			else
+			{
+				len = 15;
+				cans1 <<= canc2;
+				cans1 |= cans2;
+				out = head7xs[canc2] | cans1;
+			}
+		}
+		else
+		{
+			len = 8;
+			if (canc1 == 6)
+				len = 10;
+			out = headx[canc1] | cans1;
+		}
+		left <<= len;
+		out |= left;
+	//	printf("%d ", len);
+		len += clen;
+	//	printf("len=%d out=%u left=%d clen=%d\n", len, out, left, clen);
+		// 裂解大数
+		clen = len % 8;
+		left = ((1 << clen) - 1) & out;
+		len /= 8;
+		while (len--)
+		{
+			ch = out >> (len * 8 + clen) & 0xff;
+			fputc(ch, fpo);
+		}
+		in1 = fgetc(fpi);
+		//getch();
+	}
+	system("date");
+	printf("ok");
+	fclose(fpi);
+	fclose(fpo);
+	fpi = fpo = NULL;
+	return 0;
+}

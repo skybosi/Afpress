@@ -1,0 +1,84 @@
+#include"fqpress3.h"
+int main()
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("../test/picture", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	int in = 0, out = 0, len = 0, clen = 0, left = 0;
+	fpo = fopen("../test/picture.f", "w");
+	system("date");
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+
+		int canc = 0;
+		// if (ftell(fpi) == 15);
+		// break;
+		canc = canc_list[in];
+		printf("\nin=%3d canc=%d ", in, canc);
+		getbitlist(in);
+		in &= meta_cans[canc];
+		in |= head7[canc];
+		printf("newin=%d ", in);
+		if(canc==7)
+		printf("1");
+		getbitlist(in);
+		left <<= addlen7[canc];
+		in |= left;
+		len = addlen7[canc] + clen;
+		 printf("len=%d ",len);
+		if (len >= 8)
+		{
+			clen = len - 8;
+			left = ((1 << clen) - 1) & in;
+			out = (in >> clen);
+			printf("\n\t♥♥♥♥♥♥out=%3d ", out);
+			getbitlist(out);
+			printf("\n");
+			fputc(out, fpo);
+			if (clen >= 8)
+			{
+				clen -= 8;
+				out = (left >> clen);
+				left &= ((1 << clen) - 1);
+				printf("\n\tggg♥♥♥♥♥♥out=%3d ", out);
+				getbitlist(out);
+				printf("\n");
+				fputc(out, fpo);
+			}
+		}
+		else
+		{
+			clen = len;
+			left = in;
+		}
+		printf("clen=%d left=%3d ", clen, left);
+		getbitlist(left);
+		getch();
+		in = fgetc(fpi);
+
+	}
+	printf("%d %d", clen, left);
+	fputc(left, fpo);
+	fclose(fpi);
+	fclose(fpo);
+	system("date");
+	fpi = fpo = NULL;
+	return 0;
+}
+
+void getbitlist(int n)
+{
+	int bits[8] = { 0 };
+	int bit[] = { 0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1 };
+	for (int i = 0; i < 8; i++)
+	{
+		bits[i] = (n & bit[i]) / bit[i];
+		printf("%d", bits[i]);
+	}
+	printf("  ");
+}

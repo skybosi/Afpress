@@ -1,0 +1,29 @@
+#include"fqpress3.h"
+int main(int argc, char *argv[])
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen(argv[1], "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	int in = 0;
+	fpo = fopen(argv[3], "w");
+	int canc = 0;
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		int canc = 0;
+		canc = canc_list[in];
+		if (canc == atoi(argv[2]))
+			 fprintf(fpo, "%d", canc);
+		else
+		fprintf(fpo, "\n");
+		in = fgetc(fpi);
+	}
+	fclose(fpi);
+	fclose(fpo);
+	fpi = fpo = NULL;
+	return 0;
+}

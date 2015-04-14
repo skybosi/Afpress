@@ -1,0 +1,92 @@
+#include"fqpresse.h"
+int main(int argc, char *argv[])
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("../test/picture", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	char in = 0, in2 = 0, ch = 0;
+	int clen = 0, left = 0;
+	int canch = 0, canct = 0;
+	int cansh = 0, canst = 0, out = 0, len = 0;
+	bool no7head = 0;			// 判定首7数据双头数组(首次首7开头为真(小模式)，首7中间为假(大模式))
+	bool noxhead = 0;			// 判定非首7数据头(首次出现非7为真～添头，中间部分为假～不添头)
+	fpo = fopen("../test/picture.72", "w");
+	system("date");
+	in = fgetc(fpi);
+//	printf("%d %c", ftell(fpi), in);
+	while (!feof(fpi))
+	{
+
+		canch = canc_list[in];
+		cansh = in & meta_cans[canch];
+		if (canch == 7)
+		{
+			len = 15;
+			// 加尾
+			if (!noxhead)
+			{
+				noxhead = 1;
+				left = (left << 2) + 3;
+				clen += 2;
+				no7head = 1;
+			}
+			in2 = fgetc(fpi);
+			canct = canc_list[in2];
+			canst = in2 & meta_cans[canct];
+			cansh <<= canct;
+			cansh |= canst;
+			if (no7head)
+			{
+
+				out = head7xs[canct] | cansh;
+				no7head = 0;
+			}
+			else
+			{
+				if (canct == 7)
+					len = 16;
+				out = head7xm[canct] | cansh;
+			}
+		}
+		else
+		{
+			len = 7;
+			// 加头
+			if (noxhead && ftell(fpi) != 1)
+			{
+				len = 9;
+				noxhead = 0;
+				out = headxs[canch] | cansh;
+			}
+			else
+			{
+				if (canch == 6)
+					len = 8;
+				out = headxm[canch] | cansh;
+			}
+		}
+		left <<= len;
+		out |= left;
+		len += clen;
+		// 裂解大数
+		clen = len % 8;
+		left = ((1 << clen) - 1) & out;
+		len /= 8;
+		while (len--)
+		{
+			ch = out >> (len * 8 + clen) & 0xff;
+			fputc(ch, fpo);
+		}
+		in = fgetc(fpi);
+	}
+	system("date");
+	printf("ok");
+	fclose(fpi);
+	fclose(fpo);
+	fpi = fpo = NULL;
+	return 0;
+}

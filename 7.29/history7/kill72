@@ -1,0 +1,75 @@
+#include"fqpress3.h"
+int main()
+{
+	FILE *fpi = NULL;
+	fpi = fopen("../test/picture", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	//	return 0;
+	}
+	int in = 0, Canc_0 = 0, Canc_1 = 0, Canc_2 = 0, Canc_3 = 0, Canc_4 =
+		0, Canc_5 = 0, Canc_6 = 0, Canc_7 = 0, sum = 0;
+	fseek(fpi, 0, 2);
+	printf("文件大小：%9ld\n", ftell(fpi));
+	rewind(fpi);
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		int canc=0;
+	/*	if (ftell(fpi) == 5000)
+			break;*/
+		canc = canc_list[in];
+		if (canc == 6)
+		{
+			sum++;
+		//	printf("⑦");
+			in = fgetc(fpi);
+			canc = canc_list[in];
+			switch (canc)
+			{
+			case 0:
+				Canc_0++;
+				break;
+			case 1:
+				Canc_1++;
+				break;
+			case 2:
+				Canc_2++;
+				break;
+			case 3:
+				Canc_3++;
+				break;
+			case 4:
+				Canc_4++;
+				break;
+			case 5:
+				Canc_5++;
+				break;
+			case 6:
+				Canc_6++;
+				break;
+			default:
+				Canc_7++;
+				break;
+			}
+			// printf("%d", canc);
+		}
+		else
+			printf("");
+		in = fgetc(fpi);
+	}
+	printf("%d\n",sum);
+	printf(" ☆ Canc_0 = %6.3f %%\t%d\n", 100 * Canc_0 / (float)sum, Canc_0);
+	printf(" ★ Canc_1 = %6.3f %%\t%d\n", 100 * Canc_1 / (float)sum, Canc_1);
+	printf(" ☆ Canc_2 = %6.3f %%\t%d\n", 100 * Canc_2 / (float)sum, Canc_2);
+	printf(" ★ Canc_3 = %6.3f %%\t%d\n", 100 * Canc_3 / (float)sum, Canc_3);
+	printf(" ☆ Canc_4 = %6.3f %%\t%d\n", 100 * Canc_4 / (float)sum, Canc_4);
+	printf(" ★ Canc_5 = %6.3f %%\t%d\n", 100 * Canc_5 / (float)sum, Canc_5);
+	printf(" ☆ Canc_6 = %6.3f %%\t%d\n", 100 * Canc_6 / (float)sum, Canc_6);
+	printf(" ★ Canc_7 = %6.3f %%\t%d\n", 100 * Canc_7 / (float)sum, Canc_7);
+	fclose(fpi);
+	fpi = NULL;
+	return 0;
+}

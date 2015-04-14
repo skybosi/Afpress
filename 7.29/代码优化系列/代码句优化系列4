@@ -1,0 +1,13 @@
+// upress_end 第20,38行
+#include"fqpress3.h"
+int main()
+{
+	int in =64, canc =-1;
+	/* for (canc = 0; canc < 8; canc++) { if ((gethead7[canc] & (in >> 2)) ==
+	   matchead7[canc]) break; } */
+	while ((gethead7[++canc] & (in >> 2)) != matchead7[canc]);
+	//	printf("%d %d\n", gethead7[canc] & (in >> 3),
+			 //  matchead7[canc] );
+	printf("%d canc=%d ", in, canc);
+	return 0;
+}

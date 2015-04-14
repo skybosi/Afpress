@@ -1,0 +1,11 @@
+//press_end 第21行
+#include<stdio.h>
+int main()
+{
+	int in = 8, m = 56, h = 67;
+	in = in & m | h;
+	// in &= m;
+	// in |= h;
+	printf("%d ", in);
+	return 0;
+}

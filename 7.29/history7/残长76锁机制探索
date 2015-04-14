@@ -1,0 +1,57 @@
+#include"fqpress3.h"
+int main()
+{
+	FILE *fpi = NULL;
+	fpi = fopen("../test/pdf", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	int in = 0;
+//	system("date");
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		int canc = 0;
+		if (ftell(fpi) == 5000)
+			break;
+		canc = canc_list[in];
+		// printf("%d %d ", in,canc);
+		if (canc == 7)
+		{
+			printf("7");
+		//	getbitlist(in);
+			//	printf("}");
+		}
+		if (canc == 6)
+		{
+			printf("6");
+		//	getbitlist(in);
+			//	printf("}");
+		}
+		else
+			printf(".");
+		// getch();
+		in = fgetc(fpi);
+		
+	}
+//	system("date");
+	fclose(fpi);
+	fpi = NULL;
+	return 0;
+}
+
+void getbitlist(int n)
+{
+	int bits[8] = { 0 };
+	int bit[] = {
+		0x80, 0x40, 0x20, 0x10, 0x8, 0x4, 0x2, 0x1
+	};
+	for (int i = 0; i < 8; i++)
+	{
+		bits[i] = (n & bit[i]) / bit[i];
+		printf("%d", bits[i]);
+	}
+	//printf("  ");
+} 

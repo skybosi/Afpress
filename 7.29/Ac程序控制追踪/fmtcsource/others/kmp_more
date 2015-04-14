@@ -1,0 +1,140 @@
+#include<stdio.h>
+#include<string.h>
+#include<stdlib.h>
+#define FMT_STR_COUNT 13
+void getnext(char *t, int *next);
+int kmp(char *s, char *t);
+int *kmpmatch(char *buf, char **match, int match_count);
+int cmpup(const void *a, const void *b);
+char **cutstr(char *str, int *pos);
+char *substr(char *s, int n1, int n2);
+char *fmt_pattens[] = { ";{", ";}", "; ", ";\t", ");", "){", "> ", "\" ",
+	"*/"
+};
+
+int main()
+{
+	int *pos = NULL;
+	char **str_each = NULL;
+	int i = 0;
+	char *str = "jjh){vhhjnvgjcvggbb;	vhhbcdfhjij'bbvggjjjvv; ghhbv);hii";
+	printf("%s\n", str);
+	pos = kmpmatch(str, fmt_pattens, 9);
+	/* for (i = 0; i < pos[0] + 2; i++) printf("%d %d\n", i, pos[i]); */
+	str_each = cutstr(str, pos);
+	for (int i = 0; i < pos[0]; i++)
+	{
+		printf("i=%d %s\n", i, str_each[i]);
+		delete str_each[i];
+	}
+	delete str_each;
+	return 0;
+}
+
+void getnext(char *t, int *next)
+{
+	int i = 0, j = -1, l = strlen(t);
+	next[0] = -1;
+	while (i < l)
+		if (j == -1 || t[i] == t[j])
+		{
+			i++, j++;
+			if (t[i] != t[j])
+				next[i] = j;
+			else
+				next[i] = next[j];
+		}
+		else
+			j = next[j];
+}
+
+
+// KMP 算法法，s文本串，t 模式串
+int kmp(char *s, char *t)
+{
+	int ls = strlen(s), lt = strlen(t);
+	int next[50];
+	if (ls < lt)
+		return -1;
+	getnext(t, next);			// 计算next数组 
+	int i = 0, j = 0;
+	while (i < ls && j < lt)
+		if (j == -1 || s[i] == t[j])
+			i++, j++;
+		else
+			j = next[j];
+	if (j >= lt)
+		return (i - lt + 1);
+	return -1;
+}
+
+int *kmpmatch(char *buf, char **match, int match_count)
+{
+	int count = 0, pos_each = -1, i = 2;
+	int next[50];
+	int *pos = NULL;
+	pos = (int *)calloc(FMT_STR_COUNT, sizeof(int));
+	while (count < match_count)
+	{
+		// printf("{%d} %s\n", count, match[count]);
+		getnext(match[count], next);
+		pos_each = kmp(buf, match[count]);
+		if (pos_each > 0)
+		{
+			// printf("%d ", pos_each);
+			pos[i++] = pos_each + 1;
+			// printf("%d [%d]", pos[count],count);
+			// printf("[%s]\n", match[count]);
+			printf("\t\033[1m\033[32m%s"
+				   "\033[47;31m\thead breaking......\n\033[0m", match[count]);
+			// break;
+		}
+		count++;
+
+	}
+	qsort(pos, i, sizeof(int), cmpup);
+	pos[0] = i - 1;
+	pos[i] = strlen(buf);
+	// count = 0;
+	return pos;
+	// pos数组解析：0坐标表示字符串被分解的段数，以后的每一个表示每段的起始地址*/
+	free(pos);
+}
+
+// 升序排列
+int cmpup(const void *a, const void *b)
+{
+	return *(int *)a - *(int *)b;
+}
+
+char **cutstr(char *str, int *pos)
+{
+
+	char **str_each = new char *[pos[0] + 1];
+	// ？？为什么要加1才没问题
+	int i = 1;
+	while (i <= pos[0])
+	{
+		str_each[i] = new char[pos[i + 1] - pos[i] + 1];
+		str_each[i - 1] = substr(str, pos[i], pos[i + 1]);
+		// printf("%s\n", str_each[i]);
+		i++;
+		// getch();
+	}
+	return str_each;
+}
+
+/* 从s中提取下标为n1~n2的字符组成一个新字符串，
+   然后返回这个新串的首地址 取首n1不取尾n2*/
+char *substr(char *s, int n1, int n2)
+{
+	char *sp = (char *)calloc((n2 - n1 + 2), sizeof(char));
+	int i, j = 0;
+	for (i = n1; i < n2; i++)
+	{
+		sp[j++] = s[i];
+	}
+	sp[j] = 0;
+	return sp;
+	free(sp);
+}

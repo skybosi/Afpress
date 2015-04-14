@@ -1,0 +1,19 @@
+#include<stdio.h>
+int main()
+{
+	printf("%d ", sizeof(int));
+	char ch = 0;
+	int out = 359111, len =19, clen = 0, left = 0;
+	printf("%d %d\n", out, len);
+	clen = len % 8;
+	left = ((1 << clen) - 1) & out;
+	len /= 8;
+	printf("out=%d len=%d clen=%d left=%d\n", out, len, clen, left);
+	printf("%d\n", len);
+	while (len--)
+	{
+		ch = out >> (len * 8 + clen) & 0xff;
+		printf("%d ", ch);
+	}
+	return 0;
+}

@@ -1,0 +1,19 @@
+#include<stdio.h>
+int main()
+{
+	char ch = 0;
+	int out = 9830214, len = 22, clen = 0, left = 0;
+	printf("原数：out = %d\t有效位数：len = %d\n",out,len);
+	clen = len % 8;
+	left = ((1 << clen) - 1) & out;
+	len /= 8;
+	printf("余数：left= %d\t\t余数长： clen = %d\n",clen, left);
+	// printf("%d\n", len);
+	printf("\n裂解后：" );
+	while (len--)
+	{
+		ch = out >> (len * 8 + clen) & 0xff;
+		printf("%d ", ch);
+	}
+	return 0;
+}

@@ -1,0 +1,11 @@
+// upress_end 第20,38行
+#include<stdio.h>
+int main()
+{
+	int in = 8, in2 = 56;
+	in = in << 8 | in2;
+	// in<<=8;in|=in2;
+	// 如果in=in2 in|=in<<8;
+	printf("%d ", in);
+	return 0;
+}

@@ -1,0 +1,98 @@
+#include"fqpresse.h"
+int main(int argc, char *argv[])
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("../test/picture", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	char in = 0, in2 = 0, ch = 0;
+	int clen = 0, left = 0;
+	int canch = 0, canct = 0;
+	int cansh = 0, canst = 0, out = 0, len = 0;
+	bool no7head = 1;			// 判定首7数据双头数组(双7开头为真(小模式)，双7中间为假(大模式))
+	bool noxhead = 1;			// 判定非首7数据头(首次出现非7为真～添头，中间部分为假～不添头)
+	// printf("******[noxhead=%d no7head=%d]******\n", noxhead,
+	// no7head);
+	// fpo = fopen("../test/picture.f7", "w");
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		canch = canc_list[in];
+		cansh = in & meta_cans[canch];
+		printf("in=%d canch=%d cansh=%d ", in, canch, cansh);
+		if (canch == 7)
+		{
+			// 加尾
+			if (!noxhead)
+			{
+				noxhead = 1;
+				left = (left << 2) + 3;
+				clen += 2;
+				no7head = 1;
+			}
+			len = 15;
+			in2 = fgetc(fpi);
+			canct = canc_list[in2];
+			canst = in2 & meta_cans[canct];
+			printf("\n\tin2=%d canct=%d canst=%d\n", in2, canct, canst);
+			cansh <<= canct;
+			// printf("gg%d ", cansh);
+			cansh |= canst;
+			// printf("hh%d ", cansh);
+			if (no7head)
+			{
+				out = head7xs[canct] | cansh;
+				no7head = 0;
+			}
+			else
+			{
+				if (canct == 7)
+					 len = 16;
+				out = head7xm[canct] | cansh;
+			}
+		}
+		else
+		{
+			len = 7;
+			if (canch == 6)
+				len = 8;
+			out = cansh | headx[canch];
+			// 加头
+			if (noxhead)
+			{
+				noxhead = 0;
+				len += 2;
+			}
+		}
+
+		// printf("out=%d\n", out);
+		// printf("******[noxhead=%d no7head=%d]******\n", noxhead,
+		// no7head);
+		left <<= len;
+		out |= left;
+		len += clen;
+		printf("out+left=%d len=%d\n", out, len);
+		// 裂解大数
+		clen = len % 8;
+		left = ((1 << clen) - 1) & out;
+		printf("clen=%d left=%d\n", clen, left);
+		len /= 8;
+		while (len--)
+		{
+			ch = out >> (len * 8 + clen) & 0xff;
+			printf("ch=%d ", ch);
+			// fputc(ch, fpo);
+		}
+		printf("\n");
+		in = fgetc(fpi);
+		getch();
+	}
+	printf("ok");
+	fclose(fpi);
+	fclose(fpo);
+	fpi = fpo = NULL;
+	return 0;
+}

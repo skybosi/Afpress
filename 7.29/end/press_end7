@@ -1,0 +1,54 @@
+#include"fqpresse.h"
+int main(int argc, char *argv[])
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("../test/pdf", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	char in2[3] = { 0 };
+	int key = 0, fkey = 0;
+	int canc1 = 0, canc2 = 0;
+	int canch = 0, canct = 0, cansh = 0, canst = 0;
+	int head1 = 0, modeh = 0, modet = 0;
+	int lenh = 0, lent = 0, len = 0;
+	fpo = fopen("../test/pdf.f7", "w");
+	// system("date");
+	fgets(in2, 3, fpi);
+	while (!feof(fpi))
+	{
+		// printf("%3u %3u ", in2[0], in2[1]);
+		canch = canc_list[in2[0]];
+		canct = canc_list[in2[1]];
+		printf("%3u %3u ", canch, canct);
+		cansh = in2[0] & meta_cans[canch];
+		canst = in2[1] & meta_cans[canct];
+		if (canch == 7 || canct == 7)
+			key = 1;
+		if (canch < 6 || canct < 6)
+			fkey = 1;
+		if (fkey = 1 && canch < 6)
+			key = 0;
+		if (fkey = 1 && canct < 6)
+			key = 0;
+		 if (key == 0)
+		{
+			head1 = head[canch][canct];
+			canst |= (cansh << canct);
+			// printf("%8d", canst | head1);//混合模式组合数(15位)
+		}
+		if (key == 1)
+		{
+		}
+		printf("key=%d fkey=%d\n", key, fkey);
+		fgets(in2, 3, fpi);
+		getch();
+	}
+	fclose(fpi);
+	fclose(fpo);
+	// system("date");
+	fpi = fpo = NULL;
+	return 0;
+}

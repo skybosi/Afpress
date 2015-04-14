@@ -1,0 +1,41 @@
+#include"fqpresse.h"
+int main()
+{
+	int head7x[] =
+		{ 0x7f00, 0x7e00, 0x7f00, 0x7800, 0x7000, 0x6000, 0x4000, 0x0 };
+	int head7xn[] =
+		{ 0x7f00, 0x7e00, 0x7f00, 0x7800, 0x7000, 0x6000, 0x4000, 0x4000 };
+	int headx[] = { 0x0, 0x2, 0x4, 0x8, 0x10, 0x20, 0x80 };
+	int a = 88, b = 7;
+	int clen = 5, left = 10;
+	int canch = 0, canct = 0;
+	int cansh = 0, canst = 0, out = 0, len = 0;
+	int nohead = 1;				// 首7数据双头数组(双7开头为假，双7中间为真)
+	canch = canc_list[a];
+	canct = canc_list[b];
+	cansh = a & meta_cans[canch];
+	canst = b & meta_cans[canct];
+	// printf("%d %d\n%d %d\n", canch, canct, cansh, canst);
+	if (canch == 7)
+	{
+		len = 15;
+		cansh <<= canct;
+		// printf("gg%d ", cansh);
+		cansh |= canst;
+		// printf("hh%d ", cansh);
+		if (nohead && canct == 7)
+		{
+			len = 16;
+			out = head7xn[canct] | cansh;
+		}
+		else
+			out = head7x[canct] | cansh;
+	}
+	else;
+	printf("out=%d  len=%d\n", out, len);
+	left <<= len;
+	out |= left;
+	len+=clen;
+	printf("out=%d  len=%d\n", out, len);
+	return 0;
+}

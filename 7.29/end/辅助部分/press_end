@@ -1,0 +1,30 @@
+#include"fqpresse.h"
+int main(int argc, char *argv[])
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("../test/picture", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	int in1 = 0, in2 = 0, canc1 = 0, canc2 = 0, cansh = 0, canst = 0, key =
+		0, modeh = 0, modet = 0, lenh = 0, lent = 0;
+	fpo = fopen("../test/picture.f7", "w");
+	system("date");
+	in1 = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		/* if (key == 0) { canc1 = canc_list[in1]; cansh = in &
+		   meta_cans[canc]; lenh = len1[canc]; modeh = mode1[canc]; in1 =
+		   fgetc(fpi); } */
+		printf("%d ", in1);
+		in1 = fgetc(fpi);
+		getch();
+	}
+	fclose(fpi);
+	fclose(fpo);
+	system("date");
+	fpi = fpo = NULL;
+	return 0;
+}

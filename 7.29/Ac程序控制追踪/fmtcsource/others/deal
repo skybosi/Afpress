@@ -1,0 +1,59 @@
+#include"fmt_c_code.h"
+#include"kmpmatch.c"
+#include"getname.c"
+int main()
+{
+	char full_filename[] =
+		"/sdcard/Ac程序控制追踪/fmtcsource/test/hello1.c";
+	deal_with_file(full_filename);
+	return 0;
+}
+
+char *deal_with_file(char *full_filename)
+{
+	printf("%s\n", full_filename);
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen(full_filename, "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	char *no_bl_filename = NULL;
+	no_bl_filename = (char *)calloc(NO_BLANK_LINE_FILENAME_LONG, sizeof(char));
+	char *filename;
+	filename = get_name(full_filename);
+	sprintf(no_bl_filename, "%s%s", "_", filename);
+	fpo = fopen(no_bl_filename, "w");
+	int in = 0;
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		if (in != '\n')
+		{
+			//printf("%c", in);
+			fputc(in, fpo);
+		}
+		else
+		{
+			//printf("old=%c\n",in);
+			fseek(fpi, -2, 1);
+			in = fgetc(fpi);
+			//printf("new=%c\n",in);
+			fseek(fpi, 1, 1);
+			if (in != ';' && in != ')'&& !isspace(in))
+			{
+			//	printf("(%c)", ' ');
+				fputc(' ',fpo);
+			}
+		}
+		in = fgetc(fpi);
+		//getch();
+	}
+	printf("ok");
+	fclose(fpi);
+	fclose(fpo);
+	fpi = fpo = NULL;
+	free(no_bl_filename);
+	return no_bl_filename;
+}

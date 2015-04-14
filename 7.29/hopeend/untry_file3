@@ -1,0 +1,29 @@
+#include"fqpress3.h"
+int main(int argc, char *argv[])
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("../test/picture.3", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	int in = 0, out = 0, clen = 0, left = 0;
+	bool no7head = 0;			// 判定首7数据双头数组(双7开头为真(小模式)，双7中间为假(大模式))
+	bool noxhead = 0;			// 判定非首7数据头(首次出现非7为真～添头，中间部分为假～不添头)
+	fpo = fopen("../test/picture.27", "w");
+	system("date");
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+
+		// getch();
+		in = fgetc(fpi);
+	}
+	fclose(fpi);
+	fclose(fpo);
+	system("date");
+	fpi = fpo = NULL;
+	return 0;
+}
+

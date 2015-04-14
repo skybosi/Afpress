@@ -1,0 +1,37 @@
+#include"fqpress3.h"
+int main()
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("fenxi3.f", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	int in = 0, out = 0, len = 0, clen = 0, left = 0;
+	fpo = fopen("fenxi3.ff", "w");
+	system("date");
+	in = fgetc(fpi);
+	while (!feof(fpi))
+	{
+		printf("%3d ", in);
+		int canc = 0;
+		canc = canc_list[in];
+		printf("%d ", canc);
+		in &= meta_cans[canc];
+		if (canc)
+			in |= (1 << canc);
+		printf("%3d ", in);
+		canc = canc_list[in];
+		printf("%d\n", canc);
+		 fputc(in, fpo);
+	//	getch();
+		in = fgetc(fpi);
+
+	}
+	fclose(fpi);
+	fclose(fpo);
+	system("date");
+	fpi = fpo = NULL;
+	return 0;
+}

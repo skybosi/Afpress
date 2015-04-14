@@ -1,0 +1,22 @@
+#include<stdio.h>
+#include<string.h>
+#include"right_n_str.c"
+void del_blank_line(char *strsrc);
+int main()
+{
+	char str[] = "	  fhjjvg";
+	del_blank_line(str);
+	printf("%s", str);
+	return 0;
+}
+
+void del_blank_line(char *str)
+{
+	char *tmp=str;
+	while ((*str == ' ') || (*str == '\t'))
+		str++;
+	while (*(tmp++) = *(str++));
+}
+
+/* 
+   char *t; t=s; while(*s==' ') s++; while(*t++=*s++); } */ 

@@ -1,0 +1,73 @@
+#include"fqpress3.h"
+int main()
+{
+	FILE *fpi = NULL, *fpo = NULL;
+	fpi = fopen("./test/picture.f", "r");
+	if (!fpi)
+	{
+		printf("ERROR");
+		exit(0);
+	}
+	fpo = fopen("./test/picture.22", "w");
+	int in = 0, canc, clen = 0, left = 0, out = 0;
+	int chose_way = 0;
+	system("date");
+	while ((in = fgetc(fpi)) != EOF)
+	{
+		int len = 8;
+		if (clen)
+		{
+			left <<= 8;
+			in |= left;
+			len += clen;
+			// printf("%d ", len);
+		}
+		for (canc = 0; canc < 8; canc++)
+		{
+			if ((gethead7[canc] & (in >> clen)) == matchead7[canc])
+				break;
+		}
+		if (addlen7[canc] < 8)
+		{
+			clen = len - addlen7[canc];
+			left = in & ((1 << clen) - 1);
+			out = (in >> clen);
+			out &= meta_cans[canc];
+			chose_way = chose_wayl7[canc] & out;
+			if (canc == 0)
+				chose_way = !chose_way;
+			if (!chose_way)
+				out |= (0xff >> canc << canc);
+		//	printf("%d ", out);
+			fputc(out, fpo);
+		}
+		else
+		{
+			if (len < 9)
+			{
+				clen = len;
+				left = in;
+			}
+			else
+			{
+				clen = len - addlen7[canc];
+				left = in & ((1 << clen) - 1);
+				out = (in >> clen);
+				out &= meta_cans[canc];
+				chose_way = chose_wayl7[canc] & out;
+				if (canc == 0)
+					chose_way = !chose_way;
+				if (!chose_way)
+					out |= (0xff >> canc << canc);
+			//	printf("%d ", out);
+				fputc(out, fpo);
+			}
+		}
+		//getch();
+	}
+	system("date");
+	fclose(fpo);
+	fclose(fpi);
+	fpi = fpo = NULL;
+	return 0;
+}
